@@ -84,7 +84,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className={`min-h-screen ${isDarkMode ? 'bg-dark-background text-dark-text' : 'bg-background text-text'} flex flex-col items-center justify-center p-4 relative`}>
+        <div className={`min-h-screen ${isDarkMode ? 'dark bg-dark-background text-dark-text' : 'bg-background text-text'} flex flex-col items-center justify-center p-4 relative`}>
             {isAIThinking && <LoadingOverlay />}
             <div className="text-center mb-4">
                 <h1 className="text-4xl font-bold text-primary dark:text-dark-primary">Vier Gewinnt</h1>
@@ -94,7 +94,7 @@ const App: React.FC = () => {
                     <h2 className="text-2xl text-secondary dark:text-dark-secondary">Aktueller Spieler: {currentPlayer}</h2>
                 )}
             </div>
-            <div className={`bg-white dark:bg-dark-background p-8 rounded-lg shadow-lg`}>
+            <div className={`bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg`}>
                 <Board
                     board={board}
                     onCellClick={handleCellClick}

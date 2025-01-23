@@ -13,13 +13,13 @@ const Cell: React.FC<CellProps> = ({ value, isHovered }) => {
             case 2:
                 return 'bg-secondary';
             default:
-                return 'bg-white';
+                return '';
         }
     };
 
     return (
         <div
-            className={`w-16 h-16 border border-gray-300 rounded-full ${getColor()} ${isHovered ? 'bg-gray-300 dark:bg-gray-700' : ''}`}
+            className={`w-16 h-16 border border-gray-300 dark:border-gray-800 rounded-full ${getColor()} ${isHovered ? 'bg-gray-300 dark:bg-gray-700' : ''}`}
         ></div>
     );
 };
