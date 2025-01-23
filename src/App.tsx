@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Board from './components/Board';
-import { initialBoard, dropPiece, checkWin } from './GameLogic';
+import { initialBoard, dropPiece, checkWin, getNextFreeCell } from './GameLogic';
 import { findBestMove } from './AI';
 import LoadingOverlay from './components/LoadingOverlay';
 import ThemeSwitcher from './components/ThemeSwitcher';
@@ -11,9 +11,10 @@ const App: React.FC = () => {
     const [winner, setWinner] = useState<number | null>(null);
     const [isAIThinking, setIsAIThinking] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Standardmäßig die Systemeinstellungen verwenden
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
+    const [hoveredColumn, setHoveredColumn] = useState<number | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 
     const handleCellClick = (column: number) => {
         if (winner || currentPlayer === 2) return;
@@ -45,7 +46,7 @@ const App: React.FC = () => {
                     setBoard(newBoard);
                     setIsAIThinking(false);
                 }
-            }, 1000); // 1000 Millisekunden Verzögerung (1 Sekunde)
+            }, 500); // 500 Millisekunden Verzögerung
 
             return () => clearTimeout(timeout);
         }
@@ -69,16 +70,43 @@ const App: React.FC = () => {
         return () => mediaQuery.removeListener(handleChange);
     }, []);
 
+    const handleMouseEnter = (column: number) => {
+        const nextFreeRow = getNextFreeCell(board, column);
+        if (nextFreeRow !== null) {
+            setHoveredColumn(column);
+            setHoveredRow(nextFreeRow);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredColumn(null);
+        setHoveredRow(null);
+    };
+
     return (
         <div className={`min-h-screen ${isDarkMode ? 'bg-dark-background text-dark-text' : 'bg-background text-text'} flex flex-col items-center justify-center p-4 relative`}>
             {isAIThinking && <LoadingOverlay />}
-            <div className={`bg-white dark:bg-dark-background p-8 rounded-lg shadow-lg w-full max-w-md`}>
-                <h1 className="text-4xl font-bold mb-4 text-center text-primary dark:text-dark-primary">Vier Gewinnt</h1>
-                <h2 className="text-2xl mb-4 text-secondary dark:text-dark-secondary">Aktueller Spieler: {currentPlayer}</h2>
-                <Board board={board} onCellClick={handleCellClick} />
-                {winner && <h2 className="text-2xl mt-4 text-secondary dark:text-dark-secondary">Spieler {winner} hat gewonnen!</h2>}
+            <div className="text-center mb-4">
+                <h1 className="text-4xl font-bold text-primary dark:text-dark-primary">Vier Gewinnt</h1>
+                {winner ? (
+                    <h2 className="text-2xl text-secondary dark:text-dark-secondary">Spieler {winner} hat gewonnen!</h2>
+                ) : (
+                    <h2 className="text-2xl text-secondary dark:text-dark-secondary">Aktueller Spieler: {currentPlayer}</h2>
+                )}
+            </div>
+            <div className={`bg-white dark:bg-dark-background p-8 rounded-lg shadow-lg`}>
+                <Board
+                    board={board}
+                    onCellClick={handleCellClick}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    hoveredColumn={hoveredColumn}
+                    hoveredRow={hoveredRow}
+                />
+            </div>
+            <div className="mt-4 flex space-x-4">
                 <button
-                    className="mt-4 px-4 py-2 bg-primary dark:bg-dark-primary text-white rounded hover:bg-blue-700 transition duration-300 shadow-md"
+                    className="px-4 py-2 bg-primary dark:bg-dark-primary text-white rounded hover:bg-blue-700 transition duration-300 shadow-md"
                     onClick={resetGame}
                 >
                     Spiel zurücksetzen

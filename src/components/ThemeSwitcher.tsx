@@ -11,10 +11,10 @@ interface ThemeSwitcherProps {
 const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ isDarkMode, toggleTheme }) => {
     return (
         <button
-            className="p-2 bg-primary dark:bg-dark-primary text-white rounded hover:bg-blue-700 transition duration-300 shadow-md"
+            className="p-2 bg-transparent text-white rounded hover:bg-blue-700 transition duration-300"
             onClick={toggleTheme}
         >
-            {isDarkMode ? <FaSun /> : <FaMoon />}
+            {isDarkMode ? <FaSun className="text-yellow-500" /> : <FaMoon className="text-gray-700" />}
         </button>
     );
 };

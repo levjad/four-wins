@@ -61,3 +61,12 @@ export const checkWin = (board: number[][], player: number) => {
 
     return false;
 };
+
+export const getNextFreeCell = (board: number[][], column: number): number | null => {
+    for (let row = board.length - 1; row >= 0; row--) {
+        if (board[row][column] === 0) {
+            return row;
+        }
+    }
+    return null;
+};
